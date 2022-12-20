@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MagniKanbanWeb.Models
+namespace MagniKanbanWeb.Models.Auth
 {
     public class LoginModel
     {
