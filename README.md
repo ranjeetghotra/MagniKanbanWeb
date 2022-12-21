@@ -2,10 +2,12 @@
 
 
 Migrate Migration
-EntityFrameworkCore\Update-Database
+
+`EntityFrameworkCore\Update-Database`
 
 Generate Migration(only if you don't have)
-EntityFrameworkCore\Add-Migration
+
+`EntityFrameworkCore\Add-Migration`
 
 
 Other Details Soon
