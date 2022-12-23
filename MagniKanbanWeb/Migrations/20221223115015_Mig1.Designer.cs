@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MagniKanbanWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221222102315_mig1")]
-    partial class mig1
+    [Migration("20221223115015_Mig1")]
+    partial class Mig1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -175,13 +175,34 @@ namespace MagniKanbanWeb.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("MagniKanbanWeb.Models.Project", b =>
+            modelBuilder.Entity("MagniKanbanWeb.Models.FileDetails", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<byte[]>("FileData")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("File");
+                });
+
+            modelBuilder.Entity("MagniKanbanWeb.Models.Project", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"), 1L, 1);
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");

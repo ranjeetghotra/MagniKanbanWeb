@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
 using Microsoft.AspNetCore.Identity;
+using MagniKanbanWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
+builder.Services.AddTransient<IFileService, FileService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -36,7 +39,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("corsapp");
 app.UseHttpsRedirection();
-app.UseAuthentication();;
+app.UseAuthentication();
 
 app.UseAuthorization();
 

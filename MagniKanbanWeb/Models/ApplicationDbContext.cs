@@ -12,4 +12,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<CommentsModel> Comments => Set<CommentsModel>();
     public DbSet<Board> Boards => Set<Board>();
     public DbSet<Project> Projects => Set<Project>();
+    public DbSet<FileDetails> File { get; set; }
 }
