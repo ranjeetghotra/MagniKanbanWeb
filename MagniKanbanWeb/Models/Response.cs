@@ -1,4 +1,5 @@
-﻿namespace MagniKanbanWeb.Models
+﻿
+namespace MagniKanbanWeb.Models
 {
     public class Response
     {

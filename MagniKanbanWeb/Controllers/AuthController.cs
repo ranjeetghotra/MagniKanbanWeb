@@ -71,9 +71,8 @@ namespace MagniKanbanWeb.Controllers
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                UserName = model.UserName,
+                Name = model.Name,
+                UserName= model.Email,
             };
             var result = await userManager.CreateAsync(user, model.Password);
             Console.Write(result.ToString());

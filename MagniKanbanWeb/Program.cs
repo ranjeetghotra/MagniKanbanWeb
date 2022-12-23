@@ -10,7 +10,8 @@ var connectionString = builder.Configuration.GetConnectionString("ConnStr");
 builder.Services.AddDbContextPool<ApplicationDbContext>(
     o => o.UseSqlServer(connectionString, options => options.EnableRetryOnFailure()));
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => { options.SignIn.RequireConfirmedAccount = true;
+    options.User.RequireUniqueEmail = true; })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 

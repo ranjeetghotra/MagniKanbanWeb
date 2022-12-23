@@ -6,58 +6,63 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
-using MagniKanbanWeb.Models.Requests;
-using MagniKanbanWeb.Models.Responses;
 
 namespace MagniKanbanWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BoardsController : ControllerBase
+    public class ProjectsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public BoardsController(ApplicationDbContext context)
+        public ProjectsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Boards
+        // GET: api/Projects
         [HttpGet]
-        public IQueryable<Object> GetBoardModel()
+        public IQueryable<Object> GetProjects()
         {
-
-            var boardModel = _context.Boards
-            .Include(a => a.Cards)
+            var project = _context.Projects
+            .Include(a => a.Boards)
             .Select(a =>
                 new
                 {
                     Id = a.Id,
                     Title = a.Title.ToString(),
-                    Cards = a.Cards.Where((b) => b.BoardId == a.Id).ToList()
+                    Boards = a.Boards.Where((b) => b.ProjectId == a.Id)
+                    .Select(d =>
+                        new 
+                        {
+                            Id = d.Id,
+                            Title = d.Title.ToString(),
+                            Cards = d.Cards.Where((b) => b.BoardId == a.Id).ToList()
+                        }
+                    ).ToList()
                 }
                 );
 
-            if (boardModel == null)
+            if (project == null)
             {
                 return (IQueryable<object>)NotFound();
             }
 
-            return boardModel;
+            return project;
         }
 
-        // GET: api/Boards/5
+        // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Object>> GetBoardModel(int id)
+        public async Task<ActionResult<object>> GetProject(int id)
         {
-            var boardModel = _context.Boards
-            .Include(a => a.Cards)
+            var boardModel = _context.Projects
+            .Include(a => a.Boards)
             .Select(a =>
                 new
                 {
                     Id = a.Id,
                     Title = a.Title.ToString(),
-                    Cards = a.Cards.Where((b) => b.BoardId == a.Id).ToList()
+                    Cards = a.Boards.Where((b) => b.ProjectId == a.Id).ToList()
                 }
                 ).Where(a => a.Id == id).ToList();
 
@@ -69,17 +74,17 @@ namespace MagniKanbanWeb.Controllers
             return boardModel[0];
         }
 
-        // PUT: api/Boards/5
+        // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBoardModel(int id, Board boardModel)
+        public async Task<IActionResult> PutProject(int id, Project project)
         {
-            if (id != boardModel.Id)
+            if (id != project.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(boardModel).State = EntityState.Modified;
+            _context.Entry(project).State = EntityState.Modified;
 
             try
             {
@@ -87,7 +92,7 @@ namespace MagniKanbanWeb.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BoardModelExists(id))
+                if (!ProjectExists(id))
                 {
                     return NotFound();
                 }
@@ -100,36 +105,36 @@ namespace MagniKanbanWeb.Controllers
             return NoContent();
         }
 
-        // POST: api/Boards
+        // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Board>> PostBoardModel(Board boardRequest)
+        public async Task<ActionResult<Project>> PostProject(Project project)
         {
-            _context.Boards.Add(boardRequest);
-           await _context.SaveChangesAsync();
+            _context.Projects.Add(project);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBoardModel", new { id = boardRequest.Id }, boardRequest);
+            return CreatedAtAction("GetProject", new { id = project.Id }, project);
         }
 
-        // DELETE: api/Boards/5
+        // DELETE: api/Projects/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBoardModel(int id)
+        public async Task<IActionResult> DeleteProject(int id)
         {
-            var boardModel = await _context.Boards.FindAsync(id);
-            if (boardModel == null)
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null)
             {
                 return NotFound();
             }
 
-            _context.Boards.Remove(boardModel);
+            _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool BoardModelExists(int id)
+        private bool ProjectExists(int id)
         {
-            return _context.Boards.Any(e => e.Id == id);
+            return _context.Projects.Any(e => e.Id == id);
         }
     }
 }

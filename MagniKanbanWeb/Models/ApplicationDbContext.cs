@@ -8,7 +8,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
-    public DbSet<TasksModel> Tasks => Set<TasksModel>();
+    public DbSet<CardsModel> Cards => Set<CardsModel>();
     public DbSet<CommentsModel> Comments => Set<CommentsModel>();
-    public DbSet<BoardModel> Boards => Set<BoardModel>();
+    public DbSet<Board> Boards => Set<Board>();
+    public DbSet<Project> Projects => Set<Project>();
 }

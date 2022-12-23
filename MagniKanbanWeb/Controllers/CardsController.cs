@@ -11,47 +11,47 @@ namespace MagniKanbanWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TasksController : ControllerBase
+    public class CardsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public TasksController(ApplicationDbContext context)
+        public CardsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Tasks
+        // GET: api/Cards
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TasksModel>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<CardsModel>>> GetCards()
         {
-            return await _context.Tasks.ToListAsync();
+            return await _context.Cards.ToListAsync();
         }
 
-        // GET: api/Tasks/5
+        // GET: api/Cards/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TasksModel>> GetTasksModel(int id)
+        public async Task<ActionResult<CardsModel>> GetCardsModel(int id)
         {
-            var tasksModel = await _context.Tasks.FindAsync(id);
+            var cardsModel = await _context.Cards.FindAsync(id);
 
-            if (tasksModel == null)
+            if (cardsModel == null)
             {
                 return NotFound();
             }
 
-            return tasksModel;
+            return cardsModel;
         }
 
-        // PUT: api/Tasks/5
+        // PUT: api/Cards/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTasksModel(int id, TasksModel tasksModel)
+        public async Task<IActionResult> PutCardsModel(int id, CardsModel cardsModel)
         {
-            if (id != tasksModel.Id)
+            if (id != cardsModel.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(tasksModel).State = EntityState.Modified;
+            _context.Entry(cardsModel).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace MagniKanbanWeb.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TasksModelExists(id))
+                if (!CardsModelExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +72,36 @@ namespace MagniKanbanWeb.Controllers
             return NoContent();
         }
 
-        // POST: api/Tasks
+        // POST: api/Cards
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TasksModel>> PostTasksModel(TasksModel tasksModel)
+        public async Task<ActionResult<CardsModel>> PostCardsModel(CardsModel cardsModel)
         {
-            _context.Tasks.Add(tasksModel);
+            _context.Cards.Add(cardsModel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTasksModel", new { id = tasksModel.Id }, tasksModel);
+            return CreatedAtAction("GetCardsModel", new { id = cardsModel.Id }, cardsModel);
         }
 
-        // DELETE: api/Tasks/5
+        // DELETE: api/Cards/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTasksModel(int id)
+        public async Task<IActionResult> DeleteCardsModel(int id)
         {
-            var tasksModel = await _context.Tasks.FindAsync(id);
-            if (tasksModel == null)
+            var cardsModel = await _context.Cards.FindAsync(id);
+            if (cardsModel == null)
             {
                 return NotFound();
             }
 
-            _context.Tasks.Remove(tasksModel);
+            _context.Cards.Remove(cardsModel);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool TasksModelExists(int id)
+        private bool CardsModelExists(int id)
         {
-            return _context.Tasks.Any(e => e.Id == id);
+            return _context.Cards.Any(e => e.Id == id);
         }
     }
 }
