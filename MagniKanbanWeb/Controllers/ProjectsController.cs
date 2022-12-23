@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
+using MagniKanbanWeb.Models.Requests;
 
 namespace MagniKanbanWeb.Controllers
 {
@@ -33,7 +34,7 @@ namespace MagniKanbanWeb.Controllers
                     Title = a.Title.ToString(),
                     Boards = a.Boards.Where((b) => b.ProjectId == a.Id)
                     .Select(d =>
-                        new 
+                        new
                         {
                             Id = d.Id,
                             Title = d.Title.ToString(),
@@ -108,11 +109,17 @@ namespace MagniKanbanWeb.Controllers
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Project>> PostProject(Project project)
+        public async Task<ActionResult<Project>> PostProject(ProjectRequest projectReq)
         {
+            var project = new Project { Title = projectReq.Title };
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
-
+            string[] boardNames = new string[] { "Backlog", "In-Progress", "In-Review", "Done" };
+            foreach (string boardName in boardNames)
+            {
+                _context.Boards.Add(new Board { Title = boardName, ProjectId = project.Id });
+            }
+            await _context.SaveChangesAsync();
             return CreatedAtAction("GetProject", new { id = project.Id }, project);
         }
 
