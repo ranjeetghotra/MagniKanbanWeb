@@ -37,7 +37,7 @@ namespace MagniKanbanWeb.Controllers
                         {
                             Id = d.Id,
                             Title = d.Title.ToString(),
-                            Cards = d.Cards.Where((b) => b.BoardId == a.Id).ToList()
+                            Cards = d.Cards.Where((e) => e.BoardId == d.Id).ToList()
                         }
                     ).ToList()
                 }
