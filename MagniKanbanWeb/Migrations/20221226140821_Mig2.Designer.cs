@@ -4,6 +4,7 @@ using MagniKanbanWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MagniKanbanWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221226140821_Mig2")]
+    partial class Mig2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,7 +147,7 @@ namespace MagniKanbanWeb.Migrations
                     b.ToTable("Cards");
                 });
 
-            modelBuilder.Entity("MagniKanbanWeb.Models.Comment", b =>
+            modelBuilder.Entity("MagniKanbanWeb.Models.Comments", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -235,7 +237,7 @@ namespace MagniKanbanWeb.Migrations
 
                     b.HasIndex("CardsModelId");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -389,7 +391,7 @@ namespace MagniKanbanWeb.Migrations
                         .HasForeignKey("BoardId");
                 });
 
-            modelBuilder.Entity("MagniKanbanWeb.Models.Comment", b =>
+            modelBuilder.Entity("MagniKanbanWeb.Models.Comments", b =>
                 {
                     b.HasOne("MagniKanbanWeb.Models.CardsModel", null)
                         .WithMany("Comments")

@@ -9,8 +9,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options) { }
 
     public DbSet<CardsModel> Cards => Set<CardsModel>();
-    public DbSet<CommentsModel> Comments => Set<CommentsModel>();
+    public DbSet<Comment> Comments => Set<Comment>();
     public DbSet<Board> Boards => Set<Board>();
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<FileDetails> File { get; set; }
+    public DbSet<Tag> Tags { get; set; }
 }

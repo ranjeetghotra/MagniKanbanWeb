@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
+using Microsoft.CodeAnalysis;
+using MagniKanbanWeb.Models.Requests;
 
 namespace MagniKanbanWeb.Controllers
 {
@@ -20,20 +22,20 @@ namespace MagniKanbanWeb.Controllers
             _context = context;
         }
 
-        // GET: api/Comments
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CommentsModel>>> GetComments()
+        // GET: api/Comments/1
+        [HttpGet("{cardId}")]
+        public IQueryable<Object> GetComments(int cardId)
         {
-            return await _context.Comments.ToListAsync();
+            return _context.Comments.Where(a => a.CardId == cardId);
         }
 
-        // GET: api/Comments/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CommentsModel>> GetCommentsModel(int id)
+        // GET: api/Comments/1/5
+        [HttpGet("{cardId}/{id}")]
+        public async Task<ActionResult<Comment>> GetCommentsModel(int cardId, int id)
         {
             var commentsModel = await _context.Comments.FindAsync(id);
 
-            if (commentsModel == null)
+            if (commentsModel == null && commentsModel?.CardId != cardId)
             {
                 return NotFound();
             }
@@ -44,7 +46,7 @@ namespace MagniKanbanWeb.Controllers
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCommentsModel(int id, CommentsModel commentsModel)
+        public async Task<IActionResult> PutCommentsModel(int id, Comment commentsModel)
         {
             if (id != commentsModel.Id)
             {
@@ -75,8 +77,9 @@ namespace MagniKanbanWeb.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CommentsModel>> PostCommentsModel(CommentsModel commentsModel)
+        public async Task<ActionResult<Comment>> PostCommentsModel(CommentRequest commentsRequest)
         {
+            Comment commentsModel = new Comment { CardId = commentsRequest.CardId, Text = commentsRequest.Text };
             _context.Comments.Add(commentsModel);
             await _context.SaveChangesAsync();
 

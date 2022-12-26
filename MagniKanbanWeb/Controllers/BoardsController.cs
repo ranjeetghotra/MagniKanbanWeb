@@ -22,12 +22,13 @@ namespace MagniKanbanWeb.Controllers
             _context = context;
         }
 
-        // GET: api/Boards
-        [HttpGet]
-        public IQueryable<Object> GetBoardModel()
+        // GET: api/Boards/1
+        [HttpGet("{projectId}")]
+        public IQueryable<Object> GetBoardModel(int projectId)
         {
 
             var boardModel = _context.Boards
+            .Where(a => a.ProjectId == projectId)
             .Include(a => a.Cards)
             .Select(a =>
                 new
@@ -46,9 +47,9 @@ namespace MagniKanbanWeb.Controllers
             return boardModel;
         }
 
-        // GET: api/Boards/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Object>> GetBoardModel(int id)
+        // GET: api/Boards/1/5
+        [HttpGet("{projectId}/{id}")]
+        public async Task<ActionResult<Object>> GetBoardModel(int projectId, int id)
         {
             var boardModel = _context.Boards
             .Include(a => a.Cards)

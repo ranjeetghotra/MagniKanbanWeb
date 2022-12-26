@@ -6,53 +6,52 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
-using MagniKanbanWeb.Models.Requests;
 
 namespace MagniKanbanWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CardsController : ControllerBase
+    public class TagsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public CardsController(ApplicationDbContext context)
+        public TagsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Cards
+        // GET: api/Tags
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CardsModel>>> GetCards()
+        public async Task<ActionResult<IEnumerable<Tag>>> GetTag()
         {
-            return await _context.Cards.ToListAsync();
+            return await _context.Tags.ToListAsync();
         }
 
-        // GET: api/Cards/5
+        // GET: api/Tags/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CardsModel>> GetCardsModel(int id)
+        public async Task<ActionResult<Tag>> GetTag(int id)
         {
-            var cardsModel = await _context.Cards.FindAsync(id);
+            var tag = await _context.Tags.FindAsync(id);
 
-            if (cardsModel == null)
+            if (tag == null)
             {
                 return NotFound();
             }
 
-            return cardsModel;
+            return tag;
         }
 
-        // PUT: api/Cards/5
+        // PUT: api/Tags/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCardsModel(int id, CardsModel cardsModel)
+        public async Task<IActionResult> PutTag(int id, Tag tag)
         {
-            if (id != cardsModel.Id)
+            if (id != tag.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(cardsModel).State = EntityState.Modified;
+            _context.Entry(tag).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +59,7 @@ namespace MagniKanbanWeb.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CardsModelExists(id))
+                if (!TagExists(id))
                 {
                     return NotFound();
                 }
@@ -73,37 +72,36 @@ namespace MagniKanbanWeb.Controllers
             return NoContent();
         }
 
-        // POST: api/Cards
+        // POST: api/Tags
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CardsModel>> PostCardsModel(CardRequest cardRequest)
+        public async Task<ActionResult<Tag>> PostTag(Tag tag)
         {
-            CardsModel cardsModel = new CardsModel { Title = cardRequest.Title, BoardId = cardRequest.BoardId };
-            _context.Cards.Add(cardsModel);
+            _context.Tags.Add(tag);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCardsModel", new { id = cardsModel.Id }, cardsModel);
+            return CreatedAtAction("GetTag", new { id = tag.Id }, tag);
         }
 
-        // DELETE: api/Cards/5
+        // DELETE: api/Tags/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCardsModel(int id)
+        public async Task<IActionResult> DeleteTag(int id)
         {
-            var cardsModel = await _context.Cards.FindAsync(id);
-            if (cardsModel == null)
+            var tag = await _context.Tags.FindAsync(id);
+            if (tag == null)
             {
                 return NotFound();
             }
 
-            _context.Cards.Remove(cardsModel);
+            _context.Tags.Remove(tag);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CardsModelExists(int id)
+        private bool TagExists(int id)
         {
-            return _context.Cards.Any(e => e.Id == id);
+            return _context.Tags.Any(e => e.Id == id);
         }
     }
 }
