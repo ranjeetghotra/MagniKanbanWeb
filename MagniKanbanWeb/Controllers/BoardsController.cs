@@ -104,13 +104,13 @@ namespace MagniKanbanWeb.Controllers
         // POST: api/Boards
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Board>> PostBoardModel(BoardRequest boardRequest)
+        public async Task<ActionResult<Board>> PostBoard(BoardRequest boardRequest)
         {
             Board board = new Board { ProjectId = boardRequest.ProjectId, Title = boardRequest.Title };
             _context.Boards.Add(board);
            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBoardModel", new { id = board.Id }, board);
+            return CreatedAtAction("GetBoardModel", new { id = board.Id, projectId = board.ProjectId }, board);
         }
 
         // DELETE: api/Boards/5
