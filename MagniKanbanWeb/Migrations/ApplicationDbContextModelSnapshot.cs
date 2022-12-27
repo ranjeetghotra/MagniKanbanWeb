@@ -115,7 +115,7 @@ namespace MagniKanbanWeb.Migrations
                     b.ToTable("Boards");
                 });
 
-            modelBuilder.Entity("MagniKanbanWeb.Models.CardsModel", b =>
+            modelBuilder.Entity("MagniKanbanWeb.Models.Card", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,21 +156,18 @@ namespace MagniKanbanWeb.Migrations
                     b.Property<int>("CardId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CardsModelId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("createdAt")
-                        .HasColumnType("datetime2");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CardsModelId");
+                    b.HasIndex("CardId");
 
                     b.ToTable("Comments");
                 });
@@ -224,8 +221,11 @@ namespace MagniKanbanWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("CardsModelId")
+                    b.Property<int?>("CardId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -233,7 +233,7 @@ namespace MagniKanbanWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CardsModelId");
+                    b.HasIndex("CardId");
 
                     b.ToTable("Tags");
                 });
@@ -382,7 +382,7 @@ namespace MagniKanbanWeb.Migrations
                         .HasForeignKey("ProjectId");
                 });
 
-            modelBuilder.Entity("MagniKanbanWeb.Models.CardsModel", b =>
+            modelBuilder.Entity("MagniKanbanWeb.Models.Card", b =>
                 {
                     b.HasOne("MagniKanbanWeb.Models.Board", null)
                         .WithMany("Cards")
@@ -391,16 +391,18 @@ namespace MagniKanbanWeb.Migrations
 
             modelBuilder.Entity("MagniKanbanWeb.Models.Comment", b =>
                 {
-                    b.HasOne("MagniKanbanWeb.Models.CardsModel", null)
+                    b.HasOne("MagniKanbanWeb.Models.Card", null)
                         .WithMany("Comments")
-                        .HasForeignKey("CardsModelId");
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MagniKanbanWeb.Models.Tag", b =>
                 {
-                    b.HasOne("MagniKanbanWeb.Models.CardsModel", null)
+                    b.HasOne("MagniKanbanWeb.Models.Card", null)
                         .WithMany("Tags")
-                        .HasForeignKey("CardsModelId");
+                        .HasForeignKey("CardId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -459,7 +461,7 @@ namespace MagniKanbanWeb.Migrations
                     b.Navigation("Cards");
                 });
 
-            modelBuilder.Entity("MagniKanbanWeb.Models.CardsModel", b =>
+            modelBuilder.Entity("MagniKanbanWeb.Models.Card", b =>
                 {
                     b.Navigation("Comments");
 

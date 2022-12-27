@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
-using Microsoft.CodeAnalysis;
 using MagniKanbanWeb.Models.Requests;
 
 namespace MagniKanbanWeb.Controllers
@@ -22,38 +21,38 @@ namespace MagniKanbanWeb.Controllers
             _context = context;
         }
 
-        // GET: api/Comments/1
-        [HttpGet("{cardId}")]
-        public IQueryable<Object> GetComments(int cardId)
+        // GET: api/Comments
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
         {
-            return _context.Comments.Where(a => a.CardId == cardId);
+            return await _context.Comments.ToListAsync();
         }
 
-        // GET: api/Comments/1/5
-        [HttpGet("{cardId}/{id}")]
-        public async Task<ActionResult<Comment>> GetCommentsModel(int cardId, int id)
+        // GET: api/Comments/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Comment>> GetComment(int id)
         {
-            var commentsModel = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comments.FindAsync(id);
 
-            if (commentsModel == null && commentsModel?.CardId != cardId)
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            return commentsModel;
+            return comment;
         }
 
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCommentsModel(int id, Comment commentsModel)
+        public async Task<IActionResult> PutComment(int id, Comment comment)
         {
-            if (id != commentsModel.Id)
+            if (id != comment.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(commentsModel).State = EntityState.Modified;
+            _context.Entry(comment).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +60,7 @@ namespace MagniKanbanWeb.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CommentsModelExists(id))
+                if (!CommentExists(id))
                 {
                     return NotFound();
                 }
@@ -77,32 +76,32 @@ namespace MagniKanbanWeb.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostCommentsModel(CommentRequest commentsRequest)
+        public async Task<ActionResult<Comment>> PostComment(CommentRequest commentRequest)
         {
-            Comment commentsModel = new Comment { CardId = commentsRequest.CardId, Text = commentsRequest.Text };
-            _context.Comments.Add(commentsModel);
+            Comment comment = new Comment { Text = commentRequest.Text, CardId = commentRequest.CardId };
+            _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCommentsModel", new { id = commentsModel.Id }, commentsModel);
+            return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
         }
 
         // DELETE: api/Comments/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCommentsModel(int id)
+        public async Task<IActionResult> DeleteComment(int id)
         {
-            var commentsModel = await _context.Comments.FindAsync(id);
-            if (commentsModel == null)
+            var comment = await _context.Comments.FindAsync(id);
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            _context.Comments.Remove(commentsModel);
+            _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CommentsModelExists(int id)
+        private bool CommentExists(int id)
         {
             return _context.Comments.Any(e => e.Id == id);
         }

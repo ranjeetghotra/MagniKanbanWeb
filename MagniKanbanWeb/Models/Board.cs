@@ -7,7 +7,7 @@ namespace MagniKanbanWeb.Models
         public int? Id { get; set; }
         public string? Title { get; set; }
         public int? ProjectId { get; set; }
-        public ICollection<CardsModel>? Cards { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public ICollection<Card>? Cards { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
     }
 }

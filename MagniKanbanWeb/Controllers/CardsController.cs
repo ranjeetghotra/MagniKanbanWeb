@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
+using Microsoft.CodeAnalysis;
 
 namespace MagniKanbanWeb.Controllers
 {
@@ -23,29 +24,38 @@ namespace MagniKanbanWeb.Controllers
 
         // GET: api/Cards
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CardsModel>>> GetCards()
+        public async Task<ActionResult<IEnumerable<Card>>> GetCards()
         {
             return await _context.Cards.ToListAsync();
         }
 
         // GET: api/Cards/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CardsModel>> GetCardsModel(int id)
+        public async Task<ActionResult<Object>> GetCardsModel(int id)
         {
-            var cardsModel = await _context.Cards.FindAsync(id);
+            var cardsModel = _context.Cards
+                .Include(a => a.Comments)
+                .Where(a => a.Id == id).ToList()
+                .Select(a =>
+                new
+                {
+                    Comments = a.Comments.Where((b) => b.CardId == a.Id).ToList()
+                }
+                )
+                .ToList();
 
-            if (cardsModel == null)
+            if (cardsModel == null || cardsModel.Count == 0)
             {
                 return NotFound();
             }
 
-            return cardsModel;
+            return cardsModel[0];
         }
 
         // PUT: api/Cards/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCardsModel(int id, CardsModel cardsModel)
+        public async Task<IActionResult> PutCardsModel(int id, Card cardsModel)
         {
             if (id != cardsModel.Id)
             {
@@ -76,9 +86,9 @@ namespace MagniKanbanWeb.Controllers
         // POST: api/Cards
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CardsModel>> PostCardsModel(CardRequest cardRequest)
+        public async Task<ActionResult<Card>> PostCardsModel(CardRequest cardRequest)
         {
-            CardsModel cardsModel = new CardsModel { Title = cardRequest.Title, BoardId = cardRequest.BoardId };
+            Card cardsModel = new Card { Title = cardRequest.Title, BoardId = cardRequest.BoardId };
             _context.Cards.Add(cardsModel);
             await _context.SaveChangesAsync();
 
