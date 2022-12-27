@@ -37,6 +37,7 @@ namespace MagniKanbanWeb.Controllers
                 .Include(a => a.Comments)
                 .Include(a => a.Tags)
                 .Include(a => a.Checklists)
+                   .ThenInclude(a => a.ChecklistItems)
                 .Where(a => a.Id == id)
                 .ToList();
 

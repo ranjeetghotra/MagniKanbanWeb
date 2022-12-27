@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Build.Framework;
 
 namespace MagniKanbanWeb.Models.Requests
 {
-    public class CardRequest
+    public class ChecklistItemRequest
     {
         [Required]
         public string Title { get; set; }
         [Required]
-        public int BoardId { get; set; }
+        public int ChecklistId { get; set; }
     }
 }

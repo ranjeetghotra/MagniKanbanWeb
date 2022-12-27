@@ -29,15 +29,7 @@ namespace MagniKanbanWeb.Controllers
 
             var boardModel = _context.Boards
             .Where(a => a.ProjectId == projectId)
-            .Include(a => a.Cards)
-            .Select(a =>
-                new
-                {
-                    Id = a.Id,
-                    Title = a.Title.ToString(),
-                    Cards = a.Cards.Where((b) => b.BoardId == a.Id).ToList()
-                }
-                );
+            .Include(a => a.Cards);
 
             if (boardModel == null)
             {

@@ -13,6 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Board> Boards => Set<Board>();
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<Checklist> Checklists => Set<Checklist>();
+    public DbSet<ChecklistItem> ChecklistItems => Set<ChecklistItem>();
     public DbSet<FileDetails> File { get; set; }
     public DbSet<Tag> Tags { get; set; }
 }

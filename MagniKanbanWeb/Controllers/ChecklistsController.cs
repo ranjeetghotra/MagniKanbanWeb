@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
+using Microsoft.CodeAnalysis;
 
 namespace MagniKanbanWeb.Controllers
 {
@@ -20,20 +21,29 @@ namespace MagniKanbanWeb.Controllers
             _context = context;
         }
 
-        // GET: api/Checklists
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Checklist>>> GetChecklists()
+        // GET: api/Checklists/1
+        [HttpGet("{cardId}")]
+        public IQueryable<Object> GetChecklists(int cardId)
         {
-            return await _context.Checklists.ToListAsync();
+            var checklists = _context.Checklists
+            .Where(a => a.CardId == cardId)
+            .Include(a => a.ChecklistItems);
+
+            if (checklists == null)
+            {
+                return (IQueryable<object>)NotFound();
+            }
+
+            return checklists;
         }
 
-        // GET: api/Checklists/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Checklist>> GetChecklist(int id)
+        // GET: api/Checklists/1/5
+        [HttpGet("{cardId}/{id}")]
+        public async Task<ActionResult<Checklist>> GetChecklist(int cardId ,int id)
         {
             var checklist = await _context.Checklists.FindAsync(id);
 
-            if (checklist == null)
+            if (checklist == null || checklist.CardId != cardId)
             {
                 return NotFound();
             }
@@ -80,7 +90,7 @@ namespace MagniKanbanWeb.Controllers
             _context.Checklists.Add(checklist);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetChecklist", new { id = checklist.Id }, checklist);
+            return CreatedAtAction("GetChecklist", new { id = checklist.Id, cardId = checklist.CardId }, checklist);
         }
 
         // DELETE: api/Checklists/5
