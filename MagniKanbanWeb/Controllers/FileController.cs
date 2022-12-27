@@ -1,8 +1,10 @@
 ﻿using MagniKanbanWeb.Models.Requests;
+using MagniKanbanWeb.Models.Responses;
 using MagniKanbanWeb.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace MagniKanbanWeb.Controllers
 {
@@ -23,17 +25,11 @@ namespace MagniKanbanWeb.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost("Upload")]
-        public async Task<ActionResult> PostSingleFile([FromForm] FileRequest fileDetails)
+        public async Task<FileResponse> PostSingleFile([FromForm] FileRequest fileDetails)
         {
-            if (fileDetails == null)
-            {
-                return BadRequest();
-            }
-
             try
             {
-                await _uploadService.PostFileAsync(fileDetails.File);
-                return Ok();
+                return await _uploadService.PostFileAsync(fileDetails.File);
             }
             catch (Exception)
             {
@@ -70,18 +66,17 @@ namespace MagniKanbanWeb.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        [HttpGet("Get")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> DownloadFile(int id)
         {
-            if (id < 1)
-            {
-                return BadRequest();
-            }
-
             try
             {
-                await _uploadService.DownloadFileById(id);
-                return Ok();
+                var stream = _uploadService.GetFileStram(id);
+                if(stream == null)
+                {
+                    return NotFound();
+                }
+                return stream;
             }
             catch (Exception)
             {

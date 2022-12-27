@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
 using MagniKanbanWeb.Models.Responses;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MagniKanbanWeb.Controllers
 {
@@ -26,7 +27,9 @@ namespace MagniKanbanWeb.Controllers
         [HttpGet("{projectId}")]
         public IQueryable<Object> GetBoardModel(int projectId)
         {
-
+            var converter = new ValueConverter<string[], string>(
+    x => string.Join(";", x),
+    x => x.Split(';', StringSplitOptions.RemoveEmptyEntries));
             var boardModel = _context.Boards
             .Where(a => a.ProjectId == projectId)
             .Include(a => a.Cards);

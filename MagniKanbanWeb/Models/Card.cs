@@ -9,7 +9,7 @@
         public int? BoardId { get; set; }
         public ICollection<Comment>? Comments { get; set; }
         public ICollection<Checklist>? Checklists { get; set; }
-        public List<Tag>? Tags { get; set; }
+        public string Tags { get; set; } = "";
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
     }
 }

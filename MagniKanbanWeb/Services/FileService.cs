@@ -1,6 +1,10 @@
 ﻿using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using MagniKanbanWeb.Models.Responses;
 
 namespace MagniKanbanWeb.Services
 {
@@ -13,14 +17,14 @@ namespace MagniKanbanWeb.Services
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task PostFileAsync(IFormFile fileData)
+        public async Task<FileResponse> PostFileAsync(IFormFile fileData)
         {
             try
             {
                 var fileDetails = new FileDetails()
                 {
-                    ID = 0,
                     FileName = fileData.FileName,
+                    ContentType = fileData.ContentType,
                 };
 
                 using (var stream = new MemoryStream())
@@ -31,6 +35,7 @@ namespace MagniKanbanWeb.Services
 
                 var result = dbContextClass.File.Add(fileDetails);
                 await dbContextClass.SaveChangesAsync();
+                return new FileResponse { ID = fileDetails.ID, FileName = fileDetails.FileName, ContentType = fileDetails.ContentType };
             }
             catch (Exception)
             {
@@ -90,6 +95,16 @@ namespace MagniKanbanWeb.Services
             {
                 throw;
             }
+        }
+
+        public dynamic? GetFileStram(int id)
+        {
+            var file = dbContextClass.File.Where(x => x.ID == id).FirstOrDefaultAsync().Result;
+            if(file == null)
+            {
+                return null;
+            }
+            return new FileStreamResult(new MemoryStream(file.FileData), file.ContentType);
         }
 
         public async Task CopyStream(Stream stream, string downloadPath)

@@ -4,6 +4,7 @@ using MagniKanbanWeb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MagniKanbanWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221227150753_file")]
+    partial class file
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,10 +135,6 @@ namespace MagniKanbanWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tags")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -280,6 +278,9 @@ namespace MagniKanbanWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int?>("CardId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -288,6 +289,8 @@ namespace MagniKanbanWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CardId");
 
                     b.ToTable("Tags");
                 });
@@ -466,6 +469,13 @@ namespace MagniKanbanWeb.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MagniKanbanWeb.Models.Tag", b =>
+                {
+                    b.HasOne("MagniKanbanWeb.Models.Card", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("CardId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -527,6 +537,8 @@ namespace MagniKanbanWeb.Migrations
                     b.Navigation("Checklists");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("MagniKanbanWeb.Models.Checklist", b =>
