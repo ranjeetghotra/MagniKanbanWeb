@@ -35,13 +35,9 @@ namespace MagniKanbanWeb.Controllers
         {
             var cardsModel = _context.Cards
                 .Include(a => a.Comments)
-                .Where(a => a.Id == id).ToList()
-                .Select(a =>
-                new
-                {
-                    Comments = a.Comments.Where((b) => b.CardId == a.Id).ToList()
-                }
-                )
+                .Include(a => a.Tags)
+                .Include(a => a.Checklists)
+                .Where(a => a.Id == id)
                 .ToList();
 
             if (cardsModel == null || cardsModel.Count == 0)
