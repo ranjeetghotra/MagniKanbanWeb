@@ -9,6 +9,7 @@ using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
 using MagniKanbanWeb.Models.Responses;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.CodeAnalysis;
 
 namespace MagniKanbanWeb.Controllers
 {
@@ -27,12 +28,10 @@ namespace MagniKanbanWeb.Controllers
         [HttpGet("{projectId}")]
         public IQueryable<Object> GetBoardModel(int projectId)
         {
-            var converter = new ValueConverter<string[], string>(
-    x => string.Join(";", x),
-    x => x.Split(';', StringSplitOptions.RemoveEmptyEntries));
             var boardModel = _context.Boards
             .Where(a => a.ProjectId == projectId)
-            .Include(a => a.Cards);
+            .OrderBy(a => a.Order)
+            .Include(a => a.Cards.OrderBy(a => a.Order));
 
             if (boardModel == null)
             {
@@ -75,10 +74,16 @@ namespace MagniKanbanWeb.Controllers
                 return BadRequest();
             }
 
+            // var board = await _context.Boards.FindAsync(id);
+
             _context.Entry(boardModel).State = EntityState.Modified;
 
             try
             {
+                // if(boardModel.Order != board?.Order)
+                // {
+                // 
+                // }
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -101,9 +106,10 @@ namespace MagniKanbanWeb.Controllers
         [HttpPost]
         public async Task<ActionResult<Board>> PostBoard(BoardRequest boardRequest)
         {
-            Board board = new Board { ProjectId = boardRequest.ProjectId, Title = boardRequest.Title };
+            int order = _context.Boards.Where(a => a.ProjectId == boardRequest.ProjectId).Count();
+            Board board = new Board { ProjectId = boardRequest.ProjectId, Title = boardRequest.Title, Order = order };
             _context.Boards.Add(board);
-           await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetBoardModel", new { id = board.Id, projectId = board.ProjectId }, board);
         }

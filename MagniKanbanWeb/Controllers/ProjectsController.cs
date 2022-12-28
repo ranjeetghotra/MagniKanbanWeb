@@ -115,9 +115,11 @@ namespace MagniKanbanWeb.Controllers
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
             string[] boardNames = new string[] { "Backlog", "In-Progress", "In-Review", "Done" };
+            int order = 0;
             foreach (string boardName in boardNames)
             {
-                _context.Boards.Add(new Board { Title = boardName, ProjectId = project.Id });
+                _context.Boards.Add(new Board { Title = boardName, ProjectId = project.Id, Order = order });
+                order++;
             }
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetProject", new { id = project.Id }, project);

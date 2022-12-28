@@ -85,7 +85,8 @@ namespace MagniKanbanWeb.Controllers
         [HttpPost]
         public async Task<ActionResult<Card>> PostCardsModel(CardRequest cardRequest)
         {
-            Card cardsModel = new Card { Title = cardRequest.Title, BoardId = cardRequest.BoardId };
+            int order = _context.Cards.Where(a => a.BoardId == cardRequest.BoardId).Count();
+            Card cardsModel = new Card { Title = cardRequest.Title, BoardId = cardRequest.BoardId, Order = order };
             _context.Cards.Add(cardsModel);
             await _context.SaveChangesAsync();
 
