@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MagniKanbanWeb.Controllers
 {
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProjectsController : ControllerBase
@@ -73,6 +75,31 @@ namespace MagniKanbanWeb.Controllers
             }
 
             return boardModel[0];
+        }
+
+        // GET: api/Projects/5
+        [HttpGet("{id}/Tags")]
+        public List<string> GetProjectTags(int id)
+        {
+            var boards = _context.Boards
+            .Where(a => a.ProjectId == id)
+            .Include(a => a.Cards)
+            .Select(a => a.Cards.Select(b => b.Tags)).ToArray();
+
+            List<string> tags = new List<string> { };
+
+            foreach(var board in boards)
+            {
+                foreach (var tag in board)
+                {
+                    if (tag != "")
+                    {
+                        tags.AddRange(tag.Split(";"));
+                    }
+                }
+            }
+
+            return tags.Distinct().ToList();
         }
 
         // PUT: api/Projects/5

@@ -9,9 +9,11 @@ using MagniKanbanWeb.Models;
 using Microsoft.CodeAnalysis;
 using MagniKanbanWeb.Migrations;
 using MagniKanbanWeb.Models.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MagniKanbanWeb.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ChecklistItemsController : ControllerBase

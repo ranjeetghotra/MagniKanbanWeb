@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
 using Microsoft.CodeAnalysis;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MagniKanbanWeb.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CardsController : ControllerBase

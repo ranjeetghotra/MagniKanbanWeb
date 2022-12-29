@@ -1,6 +1,7 @@
 ﻿using MagniKanbanWeb.Models.Requests;
 using MagniKanbanWeb.Models.Responses;
 using MagniKanbanWeb.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -8,6 +9,7 @@ using System.IO;
 
 namespace MagniKanbanWeb.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileController : ControllerBase
