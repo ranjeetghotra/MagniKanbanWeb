@@ -1,9 +1,7 @@
 ﻿using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using MagniKanbanWeb.Models.Responses;
 
 namespace MagniKanbanWeb.Services

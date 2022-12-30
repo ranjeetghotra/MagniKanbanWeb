@@ -8,9 +8,11 @@
         public string? Description { get; set; }
         public int? BoardId { get; set; }
         public int? Order { get; set; }
+        public List<ApplicationUser> Assignees { get; set; } = new List<ApplicationUser>();
+        public ICollection<Timeline>? Timeline { get; set; }
         public ICollection<Comment>? Comments { get; set; }
         public ICollection<Checklist>? Checklists { get; set; }
-        public string Tags { get; set; } = "";
+        public string[] Tags { get; set; } = { };
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
     }
 }

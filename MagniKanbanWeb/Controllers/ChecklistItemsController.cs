@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
 using Microsoft.CodeAnalysis;
-using MagniKanbanWeb.Migrations;
 using MagniKanbanWeb.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
 

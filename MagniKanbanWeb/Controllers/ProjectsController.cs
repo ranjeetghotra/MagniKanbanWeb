@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MagniKanbanWeb.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProjectsController : ControllerBase
@@ -92,10 +92,7 @@ namespace MagniKanbanWeb.Controllers
             {
                 foreach (var tag in board)
                 {
-                    if (tag != "")
-                    {
-                        tags.AddRange(tag.Split(";"));
-                    }
+                    tags.AddRange(tag);
                 }
             }
 

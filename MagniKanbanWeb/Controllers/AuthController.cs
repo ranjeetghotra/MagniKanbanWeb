@@ -52,11 +52,12 @@ namespace MagniKanbanWeb.Controllers
 
                 return Ok(new
                 {
+                    user = new { user.Id, user.Name, user.Email },
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });
             }
-            return Unauthorized();
+            return NotFound();
         }
 
         [HttpPost]

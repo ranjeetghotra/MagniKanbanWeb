@@ -30,6 +30,9 @@ namespace MagniKanbanWeb.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CardId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -79,6 +82,8 @@ namespace MagniKanbanWeb.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CardId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -223,8 +228,8 @@ namespace MagniKanbanWeb.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -296,6 +301,35 @@ namespace MagniKanbanWeb.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("MagniKanbanWeb.Models.Timeline", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.ToTable("Timelines");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -435,6 +469,13 @@ namespace MagniKanbanWeb.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MagniKanbanWeb.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("MagniKanbanWeb.Models.Card", null)
+                        .WithMany("Assignees")
+                        .HasForeignKey("CardId");
+                });
+
             modelBuilder.Entity("MagniKanbanWeb.Models.Board", b =>
                 {
                     b.HasOne("MagniKanbanWeb.Models.Project", null)
@@ -467,6 +508,15 @@ namespace MagniKanbanWeb.Migrations
                 {
                     b.HasOne("MagniKanbanWeb.Models.Card", null)
                         .WithMany("Comments")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MagniKanbanWeb.Models.Timeline", b =>
+                {
+                    b.HasOne("MagniKanbanWeb.Models.Card", null)
+                        .WithMany("Timeline")
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -530,9 +580,13 @@ namespace MagniKanbanWeb.Migrations
 
             modelBuilder.Entity("MagniKanbanWeb.Models.Card", b =>
                 {
+                    b.Navigation("Assignees");
+
                     b.Navigation("Checklists");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("Timeline");
                 });
 
             modelBuilder.Entity("MagniKanbanWeb.Models.Checklist", b =>

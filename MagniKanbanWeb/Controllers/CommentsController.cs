@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace MagniKanbanWeb.Controllers
 {
@@ -16,9 +17,10 @@ namespace MagniKanbanWeb.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
+        private readonly UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext _context;
 
-        public CommentsController(ApplicationDbContext context)
+        public CommentsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _context = context;
         }
@@ -80,10 +82,12 @@ namespace MagniKanbanWeb.Controllers
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(CommentRequest commentRequest)
         {
+            // var user = await userManager.GetUserAsync(HttpContext.User);
             Comment comment = new Comment { Text = commentRequest.Text, CardId = commentRequest.CardId };
             _context.Comments.Add(comment);
+            Timeline timeline = new Timeline { Title = "New comment added", Type = "comment", CardId = commentRequest.CardId };
+            _context.Timelines.Add(timeline);
             await _context.SaveChangesAsync();
-
             return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
         }
 

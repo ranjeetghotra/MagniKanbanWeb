@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MagniKanbanWeb.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CardsController : ControllerBase
@@ -37,7 +37,7 @@ namespace MagniKanbanWeb.Controllers
         {
             var cardsModel = _context.Cards
                 .Include(a => a.Comments)
-                // .Include(a => a.Tags)
+                .Include(a => a.Timeline)
                 .Include(a => a.Checklists)
                    .ThenInclude(a => a.ChecklistItems)
                 .Where(a => a.Id == id)
