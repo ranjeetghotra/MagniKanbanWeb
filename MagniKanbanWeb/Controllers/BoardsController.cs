@@ -76,16 +76,27 @@ namespace MagniKanbanWeb.Controllers
                 return BadRequest();
             }
 
-            // var board = await _context.Boards.FindAsync(id);
-
             _context.Entry(boardModel).State = EntityState.Modified;
 
             try
             {
-                // if(boardModel.Order != board?.Order)
-                // {
-                // 
-                // }
+                System.Diagnostics.Debug.WriteLine("trying board ");
+                var boards = _context.Boards.AsNoTracking().Where(b => b.ProjectId == boardModel.ProjectId).OrderBy(b => b.Order).ToList();
+                int order = 0;
+                boards.ForEach(b =>
+                {
+                    if (order == boardModel.Order)
+                    {
+                        order++;
+                    }
+                    if (b.Id != boardModel.Id)
+                    {
+                        System.Diagnostics.Debug.WriteLine("board" + b.Title + " order " + order);
+                        b.Order = order;
+                        _context.Entry(b).State = EntityState.Modified;
+                        order++;
+                    }
+                });
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
