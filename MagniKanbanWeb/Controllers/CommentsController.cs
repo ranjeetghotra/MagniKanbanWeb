@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
@@ -22,6 +17,7 @@ namespace MagniKanbanWeb.Controllers
 
         public CommentsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
+            this.userManager = userManager;
             _context = context;
         }
 
@@ -80,10 +76,10 @@ namespace MagniKanbanWeb.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(CommentRequest commentRequest)
+        public async Task<object> PostComment(CommentRequest commentRequest)
         {
-            // var user = await userManager.GetUserAsync(HttpContext.User);
-            Comment comment = new Comment { Text = commentRequest.Text, CardId = commentRequest.CardId };
+            var userId = User.Claims.FirstOrDefault(c => c.Type == "ID")?.Value;
+            Comment comment = new Comment { Text = commentRequest.Text, CardId = commentRequest.CardId, UserId = userId };
             _context.Comments.Add(comment);
             Timeline timeline = new Timeline { Title = "New comment added", Type = "comment", CardId = commentRequest.CardId };
             _context.Timelines.Add(timeline);

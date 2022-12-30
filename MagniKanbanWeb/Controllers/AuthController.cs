@@ -32,6 +32,7 @@ namespace MagniKanbanWeb.Controllers
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, model.Email),
+                    new Claim("ID", user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -45,7 +46,7 @@ namespace MagniKanbanWeb.Controllers
                 var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
+                    expires: DateTime.Now.AddHours(24),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );

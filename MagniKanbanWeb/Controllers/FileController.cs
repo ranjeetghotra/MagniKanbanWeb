@@ -9,7 +9,6 @@ using System.IO;
 
 namespace MagniKanbanWeb.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileController : ControllerBase
@@ -26,6 +25,8 @@ namespace MagniKanbanWeb.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
+        /// 
+        [Authorize]
         [HttpPost("Upload")]
         public async Task<FileResponse> PostSingleFile([FromForm] FileRequest fileDetails)
         {
@@ -44,6 +45,8 @@ namespace MagniKanbanWeb.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
+        /// 
+        [Authorize]
         [HttpPost("Upload/Multiple")]
         public async Task<ActionResult> PostMultipleFile([FromForm] List<FileRequest> fileDetails)
         {

@@ -9,6 +9,7 @@ using MagniKanbanWeb.Models;
 using MagniKanbanWeb.Models.Requests;
 using Microsoft.CodeAnalysis;
 using Microsoft.AspNetCore.Authorization;
+using NuGet.Protocol;
 
 namespace MagniKanbanWeb.Controllers
 {
@@ -37,7 +38,7 @@ namespace MagniKanbanWeb.Controllers
         {
             var cardsModel = _context.Cards
                 .Include(a => a.Comments)
-                .Include(a => a.Timeline)
+                .Include(a => a.Timeline.OrderByDescending(a => a.CreatedAt))
                 .Include(a => a.Checklists)
                    .ThenInclude(a => a.ChecklistItems)
                 .Where(a => a.Id == id)
@@ -61,6 +62,27 @@ namespace MagniKanbanWeb.Controllers
                 return BadRequest();
             }
 
+            var card = _context.Cards.Find(id);
+
+            foreach (string tag in card.Tags)
+            {
+                if(!cardsModel.Tags.Contains(tag))
+                {
+                    Timeline timeline = new Timeline { Title = tag + " tag removed", Type = "tag", CardId = id };
+                    _context.Timelines.Add(timeline);
+                }
+            }
+
+            foreach (string tag in cardsModel.Tags)
+            {
+                if (!card.Tags.Contains(tag))
+                {
+                    Timeline timeline = new Timeline { Title = tag + " tag added", Type = "tag", CardId = id };
+                    _context.Timelines.Add(timeline);
+                }
+            }
+            await _context.SaveChangesAsync();
+            _context.Entry(card).State = EntityState.Detached;
             _context.Entry(cardsModel).State = EntityState.Modified;
 
             try
