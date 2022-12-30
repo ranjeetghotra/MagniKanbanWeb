@@ -8,7 +8,7 @@
         public string? Description { get; set; }
         public int? BoardId { get; set; }
         public int? Order { get; set; }
-        public List<ApplicationUser> Assignees { get; set; } = new List<ApplicationUser>();
+        public string[] Assignees { get; set; } = { };
         public ICollection<Timeline>? Timeline { get; set; }
         public ICollection<Comment>? Comments { get; set; }
         public ICollection<Checklist>? Checklists { get; set; }

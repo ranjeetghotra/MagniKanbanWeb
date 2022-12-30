@@ -21,6 +21,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                     x => x.Split(';', StringSplitOptions.RemoveEmptyEntries)
                     )
                  );
+        modelBuilder
+            .Entity<Card>()
+            .Property(e => e.Assignees)
+            .HasConversion(
+                 new ValueConverter<string[], string>(
+                    x => string.Join(";", x),
+                    x => x.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                    )
+                 );
     }
 
     public DbSet<Card> Cards => Set<Card>();
