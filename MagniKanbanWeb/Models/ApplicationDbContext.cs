@@ -30,6 +30,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                     x => x.Split(';', StringSplitOptions.RemoveEmptyEntries)
                     )
                  );
+        modelBuilder.Entity<Project>()
+             .HasMany(j => j.Boards)
+             .WithOne()
+             .OnDelete(DeleteBehavior.Cascade);
     }
 
     public DbSet<Card> Cards => Set<Card>();

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MagniKanbanWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230103054516_Migration1")]
+    [Migration("20230103085451_Migration1")]
     partial class Migration1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -478,7 +478,8 @@ namespace MagniKanbanWeb.Migrations
                 {
                     b.HasOne("MagniKanbanWeb.Models.Project", null)
                         .WithMany("Boards")
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MagniKanbanWeb.Models.Card", b =>

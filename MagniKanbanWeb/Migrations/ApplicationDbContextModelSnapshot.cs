@@ -476,7 +476,8 @@ namespace MagniKanbanWeb.Migrations
                 {
                     b.HasOne("MagniKanbanWeb.Models.Project", null)
                         .WithMany("Boards")
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MagniKanbanWeb.Models.Card", b =>
