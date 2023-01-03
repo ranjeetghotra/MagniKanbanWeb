@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MagniKanbanWeb.Migrations
 {
-    public partial class Mig51 : Migration
+    public partial class Migration1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,21 +47,6 @@ namespace MagniKanbanWeb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "File",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FileData = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_File", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,6 +215,7 @@ namespace MagniKanbanWeb.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BoardId = table.Column<int>(type: "int", nullable: true),
                     Order = table.Column<int>(type: "int", nullable: true),
+                    Assignees = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Tags = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -270,7 +256,7 @@ namespace MagniKanbanWeb.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CardId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -279,6 +265,49 @@ namespace MagniKanbanWeb.Migrations
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Comments_Cards_CardId",
+                        column: x => x.CardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "File",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FileData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    CardId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_File", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_File_Cards_CardId",
+                        column: x => x.CardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Timelines",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CardId = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Timelines", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Timelines_Cards_CardId",
                         column: x => x.CardId,
                         principalTable: "Cards",
                         principalColumn: "Id",
@@ -369,6 +398,16 @@ namespace MagniKanbanWeb.Migrations
                 name: "IX_Comments_CardId",
                 table: "Comments",
                 column: "CardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_File_CardId",
+                table: "File",
+                column: "CardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Timelines_CardId",
+                table: "Timelines",
+                column: "CardId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -399,6 +438,9 @@ namespace MagniKanbanWeb.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tags");
+
+            migrationBuilder.DropTable(
+                name: "Timelines");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

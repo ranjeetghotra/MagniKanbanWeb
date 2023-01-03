@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MagniKanbanWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221229163021_mi55")]
-    partial class mi55
+    [Migration("20230103054516_Migration1")]
+    partial class Migration1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,9 +30,6 @@ namespace MagniKanbanWeb.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CardId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -85,8 +82,6 @@ namespace MagniKanbanWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CardId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -132,6 +127,10 @@ namespace MagniKanbanWeb.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Assignees")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
@@ -248,12 +247,14 @@ namespace MagniKanbanWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
+                    b.Property<int?>("CardId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ContentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("FileData")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("FileName")
@@ -261,6 +262,8 @@ namespace MagniKanbanWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("CardId");
 
                     b.ToTable("File");
                 });
@@ -471,13 +474,6 @@ namespace MagniKanbanWeb.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MagniKanbanWeb.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("MagniKanbanWeb.Models.Card", null)
-                        .WithMany("Assignees")
-                        .HasForeignKey("CardId");
-                });
-
             modelBuilder.Entity("MagniKanbanWeb.Models.Board", b =>
                 {
                     b.HasOne("MagniKanbanWeb.Models.Project", null)
@@ -513,6 +509,13 @@ namespace MagniKanbanWeb.Migrations
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MagniKanbanWeb.Models.FileDetails", b =>
+                {
+                    b.HasOne("MagniKanbanWeb.Models.Card", null)
+                        .WithMany("Files")
+                        .HasForeignKey("CardId");
                 });
 
             modelBuilder.Entity("MagniKanbanWeb.Models.Timeline", b =>
@@ -582,11 +585,11 @@ namespace MagniKanbanWeb.Migrations
 
             modelBuilder.Entity("MagniKanbanWeb.Models.Card", b =>
                 {
-                    b.Navigation("Assignees");
-
                     b.Navigation("Checklists");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("Files");
 
                     b.Navigation("Timeline");
                 });

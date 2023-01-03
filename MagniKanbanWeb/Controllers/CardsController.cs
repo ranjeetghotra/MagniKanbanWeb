@@ -38,6 +38,7 @@ namespace MagniKanbanWeb.Controllers
         {
             var cardsModel = _context.Cards
                 .Include(a => a.Comments)
+                .Include(a => a.Files)
                 .Include(a => a.Timeline.OrderByDescending(a => a.CreatedAt))
                 .Include(a => a.Checklists)
                    .ThenInclude(a => a.ChecklistItems)
@@ -49,7 +50,12 @@ namespace MagniKanbanWeb.Controllers
                 return NotFound();
             }
 
-            return cardsModel[0];
+            foreach (var file in cardsModel[0].Files)
+            {
+                file.FileData = null;
+            }
+
+            return (object) cardsModel[0];
         }
 
         // PUT: api/Cards/5
@@ -66,7 +72,7 @@ namespace MagniKanbanWeb.Controllers
 
             foreach (string tag in card.Tags)
             {
-                if(!cardsModel.Tags.Contains(tag))
+                if (!cardsModel.Tags.Contains(tag))
                 {
                     Timeline timeline = new Timeline { Title = tag + " tag removed", Type = "tag", CardId = id };
                     _context.Timelines.Add(timeline);

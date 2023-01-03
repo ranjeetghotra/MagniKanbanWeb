@@ -1,4 +1,5 @@
-﻿using MagniKanbanWeb.Models.Requests;
+﻿using MagniKanbanWeb.Models;
+using MagniKanbanWeb.Models.Requests;
 using MagniKanbanWeb.Models.Responses;
 using MagniKanbanWeb.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,10 +15,12 @@ namespace MagniKanbanWeb.Controllers
     public class FileController : ControllerBase
     {
         private readonly IFileService _uploadService;
+        private readonly ApplicationDbContext _context;
 
-        public FileController(IFileService uploadService)
+        public FileController(IFileService uploadService, ApplicationDbContext context)
         {
             _uploadService = uploadService;
+            _context = context;
         }
 
         /// <summary>
@@ -28,11 +31,11 @@ namespace MagniKanbanWeb.Controllers
         /// 
         [Authorize]
         [HttpPost("Upload")]
-        public async Task<FileResponse> PostSingleFile([FromForm] FileRequest fileDetails)
+        public async Task<FileResponse> PostSingleFile([FromForm] FileRequest file)
         {
             try
             {
-                return await _uploadService.PostFileAsync(fileDetails.File);
+                return await _uploadService.PostFileAsync(file);
             }
             catch (Exception)
             {
@@ -87,6 +90,22 @@ namespace MagniKanbanWeb.Controllers
             {
                 throw;
             }
+        }
+
+        // DELETE: api/File/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFile(int id)
+        {
+            var project = await _context.File.FindAsync(id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            _context.File.Remove(project);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace MagniKanbanWeb.Services
 {
     public interface IFileService
     {
-        public Task<FileResponse> PostFileAsync(IFormFile fileData);
+        public Task<FileResponse> PostFileAsync(FileRequest file);
 
         public Task PostMultiFileAsync(List<FileRequest> fileData);
 

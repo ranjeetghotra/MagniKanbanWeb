@@ -12,6 +12,7 @@
         public ICollection<Timeline>? Timeline { get; set; }
         public ICollection<Comment>? Comments { get; set; }
         public ICollection<Checklist>? Checklists { get; set; }
+        public ICollection<FileDetails>? Files { get; set; }
         public string[] Tags { get; set; } = { };
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
     }

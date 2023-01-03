@@ -15,19 +15,20 @@ namespace MagniKanbanWeb.Services
             this.dbContextClass = dbContextClass;
         }
 
-        public async Task<FileResponse> PostFileAsync(IFormFile fileData)
+        public async Task<FileResponse> PostFileAsync(FileRequest request)
         {
             try
             {
                 var fileDetails = new FileDetails()
                 {
-                    FileName = fileData.FileName,
-                    ContentType = fileData.ContentType,
+                    FileName = request.File.FileName,
+                    ContentType = request.File.ContentType,
+                    CardId = request.CardId,
                 };
 
                 using (var stream = new MemoryStream())
                 {
-                    fileData.CopyTo(stream);
+                    request.File.CopyTo(stream);
                     fileDetails.FileData = stream.ToArray();
                 }
 

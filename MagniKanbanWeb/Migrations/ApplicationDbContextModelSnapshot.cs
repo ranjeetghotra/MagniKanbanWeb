@@ -245,12 +245,14 @@ namespace MagniKanbanWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
+                    b.Property<int?>("CardId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ContentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("FileData")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("FileName")
@@ -258,6 +260,8 @@ namespace MagniKanbanWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("CardId");
 
                     b.ToTable("File");
                 });
@@ -505,6 +509,13 @@ namespace MagniKanbanWeb.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MagniKanbanWeb.Models.FileDetails", b =>
+                {
+                    b.HasOne("MagniKanbanWeb.Models.Card", null)
+                        .WithMany("Files")
+                        .HasForeignKey("CardId");
+                });
+
             modelBuilder.Entity("MagniKanbanWeb.Models.Timeline", b =>
                 {
                     b.HasOne("MagniKanbanWeb.Models.Card", null)
@@ -575,6 +586,8 @@ namespace MagniKanbanWeb.Migrations
                     b.Navigation("Checklists");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("Files");
 
                     b.Navigation("Timeline");
                 });
